@@ -79,15 +79,14 @@ value_summary_df <- value_df %>%
 value_select_summary_df <- value_summary_df %>% 
   spread(chest, mean_value_estimate) %>% 
   mutate(estimate_bias = `CupError+` - `ChestError+`) %>% 
-  select(ppid, estimate_bias) %>% 
-  left_join(select_df, by = "ppid")
+  left_join(select_df, by = "ppid",  suffix = c("_est", "_sel"))
 
 
 # blocks of 30 trials (exploratory analysis)
 
 b30_value_select_summary_df <- trials_df %>% 
-  mutate(block_30 = 1 + (trial_num - 16) %/% 30) %>% 
-  filter(block_30 > 0, block_30 <= 9) %>% 
+  mutate(block_30 = 1 + trial_num %/% 30) %>% 
+  filter(block_30 > 0, block_30 <= 10) %>% 
   group_by(ppid, block_30) %>% 
   summarise(`CupError+` = mean(selected_chest == "CupError+"),
             `ChestError+` = mean(selected_chest == "ChestError+")) %>% 
@@ -102,3 +101,9 @@ b30_value_select_summary_df <- trials_df %>%
                 ),
                 by = c("ppid", "block_30")
             )
+
+b30_corr <- b30_value_select_summary_df %>% 
+  group_by(block_30) %>% 
+  summarise(r = cor(estimate_bias, selection_bias))
+
+

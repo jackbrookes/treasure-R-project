@@ -7,16 +7,16 @@ data {
   vector<lower = 0, upper = 1>[2] initial_est;
   int<lower = 0> N; // total num trials/observations
   int<lower = 0> trial_idx[N]; // trial numbers
+  int<lower = 0> ppid_idx[N]; // ppid
   int<lower = 1, upper = 2> y[N]; // selected target
   int<lower = 0, upper = 1> k[N]; // key? 0 or 1
   int<lower = 0, upper = 1> r[N]; // coin? 0 or 1
   vector[2] value_probe[N]; // reported values
-
 }
 
 
 parameters {
-  real<lower = 0, upper = 1> g; // generalisation
+  real<lower = 0, upper = 1> g[18]; // generalisation, per participant
   real<lower = 0, upper = 1> eta; // learning rate
   real<lower = 0, upper = 100> sigma; // sd of value estimates
 }
@@ -28,6 +28,7 @@ transformed parameters {
   vector[2] r_est[N];
 
   for (i in 1:N) {
+    int ppid = ppid_idx[i];
     if (trial_idx[i] == 1) {
       // first trial: assume 50% chance in each stage
       k_est[i] = initial_est;
@@ -41,12 +42,12 @@ transformed parameters {
       k_est[i, chosen] = k_est[i - 1, chosen] + eta * (k[i - 1] - k_est[i - 1, chosen]);
       
       // but, some of that generalises to the estimate of the other key's probability
-      k_est[i, other] = k_est[i - 1, other] + g * eta * (k[i - 1] - k_est[i - 1, other]);
+      k_est[i, other] = k_est[i - 1, other] + g[ppid] * eta * (k[i - 1] - k_est[i - 1, other]);
       
       // further, we update the chest we chose IF we found a key last time.
       if (k[i - 1]) { 
         r_est[i, chosen] = r_est[i - 1, chosen] + eta * (r[i - 1] - r_est[i - 1, chosen]);
-      
+
         // no generalisation here. just carry over previous
         r_est[i, other] = r_est[i - 1, other];
       } else { // if not, just carry over...
@@ -65,3 +66,4 @@ model {
     }
   }
 }
+
