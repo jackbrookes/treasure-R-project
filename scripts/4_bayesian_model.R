@@ -36,10 +36,10 @@ input_data <- model_df %>%
 
 fit <- stan(file = "stan/generalisation.stan",
             data = input_data,
-            iter = 2000,
-            chains = 1,
-            cores = 1,
-            pars = c("eta", "g", "sigma"),
+            iter = 4000,
+            chains = 8,
+            cores = 8,
+            pars = c("eta", "eta_ch", "g", "sigma"),
             control = list(adapt_delta = 0.999),
             diagnostic_file = "stan_diagnostics.txt") 
 

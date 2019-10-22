@@ -11,6 +11,14 @@ theme_set(
           strip.text = element_text(face = "bold", margin = margin(8, 8, 8, 8)))
 )
 
+#' function to darken chosen colours
+darken <- function(color, factor = 1.4) {
+  col <- col2rgb(color)
+  col <- col / factor
+  col <- rgb(t(col), maxColorValue = 255)
+  col
+}
+
 # pre-prepare colour scales for consitancy
 
 clrs_outcomes <- c(
@@ -19,10 +27,14 @@ clrs_outcomes <- c(
   `Cup error` = "#ba0bba"
 )
 
+clrs_outcomes_dark <- clrs_outcomes %>% 
+  map_chr(darken, factor = 2)
+names(clrs_outcomes_dark) <- paste(names(clrs_outcomes_dark), "dark", sep = "_")
+
 clr_scale <- list(
   scale_discrete_manual(
     aesthetics = c("colour", "fill"),
-    values = clrs_outcomes,
+    values = c(clrs_outcomes, clrs_outcomes_dark),
     guide = FALSE)
 )
 

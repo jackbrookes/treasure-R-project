@@ -1,9 +1,11 @@
+library(ggforce)
+
 # selection bias ?
 selection_bias <- ggplot(select_df, aes(x = "", y = selection_bias)) +
-  geom_hline(yintercept = 0, linetype = "dashed", size = .3) +
-  geom_jitter(width = .1, size = 1, color = "grey60") +
-  stat_summary(fun.data = mean_se, geom = "errorbar", width = .2) +
-  stat_summary(fun.y = mean, geom = "point", size = 2.5) +
+  geom_hline(yintercept = 0, linetype = "dashed", size = .25) +
+  geom_sina(maxwidth = .4, size = .8, shape = 4, position = position_nudge(x = .2)) + 
+  stat_summary(fun.data = mean_se, geom = "errorbar", width = .3, size = .25, position = position_nudge(x = -.2)) +
+  stat_summary(fun.y = mean, geom = "point", size = 2, shape = 21, color = "black", stroke = .25, fill = "white", position = position_nudge(x = -.2)) +
   annotate("text",
            x = "",
            y = c(1, -1),
@@ -19,11 +21,13 @@ selection_bias <- ggplot(select_df, aes(x = "", y = selection_bias)) +
   ggsave("graphs/select.png", type = "cairo", height = 4, width = 2, dpi = 600)
 
 # reselection vs outcome 
-reselect <- ggplot(reselect_df, aes(x = prev_outcome, y = reselect_controlled, color = prev_outcome)) +
+reselect <- ggplot(reselect_df, aes(x = prev_outcome,
+                                    y = reselect_controlled,
+                                    color = paste0(prev_outcome, "_dark"),
+                                    fill = prev_outcome)) +
   geom_hline(yintercept = 0, linetype = "dashed", size = .3) +
-  geom_jitter(width = .05) +
-  stat_summary(fun.data = mean_se, geom = "errorbar", color = "black", width = .1) +
-  stat_summary(fun.y = mean, geom = "point", color = "black", size = 3) +
+  stat_summary(fun.data = mean_se, geom = "errorbar", width = .4, size = .25) +
+  stat_summary(fun.y = mean, geom = "point", size = 2, shape = 21, color = "black", stroke = .25) +
   labs(x = NULL, y = "Reselection preference (p.p.)") + 
   clr_scale + 
   expand_limits(y = c(0.5, -0.5)) +
@@ -41,10 +45,10 @@ value_ests <- ggplot(value_df, aes(x = trial_num, y = value_estimate, color = ch
 
 # high-level value estimates
 estimate_bias <- ggplot(value_select_summary_df, aes(x = "", y = estimate_bias )) +
-  geom_hline(yintercept = 0, linetype = "dashed", size = .3) +
-  geom_jitter(width = .1, size = 1, color = "grey60") +
-  stat_summary(fun.data = mean_se, geom = "errorbar", width = .2) +
-  stat_summary(fun.y = mean, geom = "point", size = 2.5) +
+  geom_hline(yintercept = 0, linetype = "dashed", size = .25) +
+  geom_sina(maxwidth = .4, size = .8, shape = 4, position = position_nudge(x = .2)) + 
+  stat_summary(fun.data = mean_se, geom = "errorbar", width = .3, size = .25, position = position_nudge(x = -.2)) +
+  stat_summary(fun.y = mean, geom = "point", size = 2, shape = 21, color = "black", stroke = .25, fill = "white", position = position_nudge(x = -.2)) +
   annotate("text",
            x = "",
            y = c(1, -1),
