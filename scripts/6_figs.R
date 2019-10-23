@@ -70,17 +70,19 @@ save_plot(
 # results: 3
 
 model_g <- plot_grid(
-  gen_graph,
   plot_grid(
-    dens_graph("\u03B7 (Learning rate)", eta, eta_hdr95min, eta_hdr95max, eta_mean, "red") +
-      scale_x_continuous(limits = c(0, 0.2), breaks = c(0, 0.1, 0.2)),
-    dens_graph("\u03C3 (Standard deviation)", sigma, sigma_hdr95min, sigma_hdr95max, sigma_mean, "green") +
-      scale_x_continuous(limits = c(0.2, 0.3), breaks = c(0.2, 0.25, 0.3)),
-    ncol = 1,
-    labels = c("b", "c")
+    gen_graph,
+    labels = c("a", ""),
+    nrow = 2
   ),
-  labels = c("a", ""),
-  nrow = 1
+  plot_grid(
+    eta_graph + theme(plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), "cm")),
+    sigma_graph + theme(plot.margin = unit(c(0.35, 0.2, 0.2, 0.2), "cm")),
+    rel_widths = c(1.08, 1),
+    labels = c("b", "c"),
+    ncol = 2
+  ),
+  rel_widths = c(1, 1.5)
 )
 
 

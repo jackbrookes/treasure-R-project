@@ -16,9 +16,9 @@ data {
 
 
 parameters {
-  real<lower = 0, upper = 1> g[18]; // generalisation, per participant
-  real<lower = 0, upper = 1> eta; // learning rate
-  real<lower = 0, upper = 100> sigma; // sd of value estimates
+  real<lower = 0, upper = 1> g; // generalisation, per participant
+  real<lower = 0, upper = 1> eta[18]; // learning rate
+  real<lower = 0, upper = 100> sigma[18]; // sd of value estimates
 }
 
 transformed parameters {
@@ -39,14 +39,14 @@ transformed parameters {
       int other = chosen == 1 ? 2 : 1;
       
       // we try to find a key, then update our k_est
-      k_est[i, chosen] = k_est[i - 1, chosen] + eta * (k[i - 1] - k_est[i - 1, chosen]);
+      k_est[i, chosen] = k_est[i - 1, chosen] + eta[ppid] * (k[i - 1] - k_est[i - 1, chosen]);
       
       // but, some of that generalises to the estimate of the other key's probability
-      k_est[i, other] = k_est[i - 1, other] + g[ppid] * eta * (k[i - 1] - k_est[i - 1, other]);
+      k_est[i, other] = k_est[i - 1, other] + g * eta[ppid] * (k[i - 1] - k_est[i - 1, other]);
       
       // further, we update the chest we chose IF we found a key last time.
       if (k[i - 1]) { 
-        r_est[i, chosen] = r_est[i - 1, chosen] + eta * (r[i - 1] - r_est[i - 1, chosen]);
+        r_est[i, chosen] = r_est[i - 1, chosen] + eta[ppid] * (r[i - 1] - r_est[i - 1, chosen]);
 
         // no generalisation here. just carry over previous
         r_est[i, other] = r_est[i - 1, other];
@@ -60,9 +60,13 @@ transformed parameters {
 
 
 model {
+  g ~ uniform(0, 1);
+  eta ~ uniform(0, 1);
+  sigma ~ uniform(0, 100);
+  
   for (i in 1:N) {
     if (trial_idx[i] >= 30) { // can only predict on trials with a probe
-      value_probe[i] ~ normal(k_est[i] .* r_est[i], sigma);
+      value_probe[i] ~ normal(k_est[i] .* r_est[i], sigma[ppid_idx[i]]);
     }
   }
 }

@@ -39,7 +39,7 @@ fit <- stan(file = "stan/generalisation.stan",
             iter = 4000,
             chains = 8,
             cores = 8,
-            pars = c("eta", "eta_ch", "g", "sigma"),
+            pars = c("eta", "g", "sigma"),
             control = list(adapt_delta = 0.999),
             diagnostic_file = "stan_diagnostics.txt") 
 
