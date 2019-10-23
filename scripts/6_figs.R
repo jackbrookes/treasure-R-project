@@ -30,7 +30,7 @@ results1 <- plot_grid(
   reselect,
   nrow = 1,
   labels = letters,
-  rel_widths = c(0.7, 2.0),
+  rel_widths = c(0.8, 2.0),
   axis = "tblr",
   align = "h"
 )
@@ -40,8 +40,8 @@ save_plot(
   results1, 
   type = "cairo",
   ncol = 2,
-  base_height = 4, 
-  base_width = 4.3,
+  base_height = 3, 
+  base_width = 3.2,
   dpi = 600
 )
 
@@ -52,7 +52,7 @@ results2 <- plot_grid(
   estimate_corr,
   nrow = 1,
   labels = letters,
-  rel_widths = c(0.7, 2.0),
+  rel_widths = c(0.8, 2.0),
   axis = "tblr",
   align = "h"
 )
@@ -62,8 +62,8 @@ save_plot(
   results2, 
   type = "cairo",
   ncol = 2,
-  base_height = 4, 
-  base_width = 4.3,
+  base_height = 3, 
+  base_width = 3.2,
   dpi = 600
 )
 

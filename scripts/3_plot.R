@@ -10,18 +10,21 @@ selection_bias <- ggplot(select_df, aes(x = "", y = selection_bias)) +
            x = "",
            y = c(1, -1),
            color = 'black',
-           size = 3,
+           size = 2,
            label = c(paste0("italic(\"CupError+ pref.\")"),
                      paste0("italic(\"ChestError+ pref.\")")),
            parse = TRUE,
            hjust = 0.5) +
   labs(x = NULL, y = "Selection bias (p.p.)") + 
+  theme(axis.ticks.x = element_blank()) +
   expand_limits(y = c(0.75, -0.75)) +
   scale_y_continuous(labels = scales::percent) +
   ggsave("graphs/select.png", type = "cairo", height = 4, width = 2, dpi = 600)
 
 # reselection vs outcome 
-reselect <- ggplot(reselect_df, aes(x = prev_outcome,
+reselect <- ggplot(reselect_df, aes(x = prev_outcome %>% recode_factor(Reward = "Rwd",
+                                                                       `Chest error` = "Chest\nError",
+                                                                       `Cup error` = "Cup\nError"),
                                     y = reselect_controlled,
                                     color = paste0(prev_outcome, "_dark"),
                                     fill = prev_outcome)) +
@@ -53,12 +56,13 @@ estimate_bias <- ggplot(value_select_summary_df, aes(x = "", y = estimate_bias )
            x = "",
            y = c(1, -1),
            color = 'black',
-           size = 3,
+           size = 2,
            label = c(paste0("italic(\"CupError+ pref.\")"),
                      paste0("italic(\"ChestError+ pref.\")")),
            parse = TRUE,
            hjust = 0.5) +
   labs(x = NULL, y = "Estimate bias (p.p.)") + 
+  theme(axis.ticks.x = element_blank()) +
   expand_limits(y = c(0.75, -0.75)) +
   scale_y_continuous(labels = scales::percent) +
   ggsave("graphs/probe_bias.png", type = "cairo", height = 4, width = 2, dpi = 600)
