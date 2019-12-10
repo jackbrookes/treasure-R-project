@@ -80,8 +80,13 @@ estimate_corr <- ggplot(value_select_summary_df, aes(x = estimate_bias, y = sele
                          signif(abs(est_sel_fit$coef[[1]]), 2),
                          "~\";\"~Adj.~italic(R) ^ 2 == ",
                          signif(summary(est_sel_fit)$adj.r.squared, 2),
-                         "~\";\"~italic(p) == ",
-                         signif(summary(est_sel_fit)$coef[2,4], 3))) + 
+                         ifelse(
+                           summary(est_sel_fit)$coef[2,4] < 0.001,
+                           "~\";\"~italic(p) < \".001\"",
+                           paste0(
+                             "~\";\"~italic(p) == ",
+                             signif(summary(est_sel_fit)$coef[2,4], 3))
+                         ))) + 
   scale_x_continuous(labels = scales::percent) +
   scale_y_continuous(labels = scales::percent) +
   labs(x = "Mean value estimate bias (p.p.)", y = "Selection bias (p.p.)", fill = "Chest", color = "Chest") + 
