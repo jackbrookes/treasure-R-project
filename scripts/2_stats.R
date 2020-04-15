@@ -1,4 +1,5 @@
-# install.packages("effsize")
+#install.packages("DescTools")
+library(DescTools)
 
 # is there a bias in selection of either target?
 t.test(select_df$selection_bias)
@@ -7,8 +8,13 @@ with(select_df, mean(selection_bias) / sd(selection_bias))
 
 # can reselection rate be predicted by previous outcome / selected chest ?
 # we use `Error(ppid)` to tell R that the error per participant. (this is a within subjects design)
-aov(reselect_controlled ~ prev_outcome * prev_chest + Error(ppid), reselect_df) %>% 
+reselection_aov <- aov(reselect_controlled ~ prev_outcome * prev_chest + Error(ppid), reselect_df)
+
+reselection_aov %>% 
   summary()
+
+# effect size
+DescTools::EtaSq(reselection_aov, type = 1)
 
 reselect_pairwise <- with(reselect_df,
                           pairwise.t.test(reselect_controlled, prev_outcome, paired = TRUE))
